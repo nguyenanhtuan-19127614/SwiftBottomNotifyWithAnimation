@@ -197,8 +197,12 @@ class OpinionContentView: UIView {
         addSubviews()
         loadContent()
         addLayout()
- 
+        
+        self.rateView.setupDelegate(view: self)
+        
     }
+    
+    
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -239,7 +243,37 @@ class OpinionContentView: UIView {
         descriptionLabel.attributedText = attributedDescription
         descriptionLabel.textAlignment = .center
     }
+    
+    //Delegate Function
+    func turnOnSubmitButton() {
+        
+        let startColor = CGColor(red: 0.439, green: 0.71, blue: 0.341, alpha: 1)
+        let endColor = CGColor(red: 0.056, green: 0.558, blue: 0.317, alpha: 1)
+        
+        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve,
+                          animations: {
 
+            //turn on
+            self.submitBtn.setGradientBackground(colors: [startColor,endColor])
+            self.submitBtn.setTitleColor(.white, for: .normal)
+
+        }, completion: nil)
+
+    }
+    
+    func turnOffSubmitButton() {
+        
+        UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve,
+                          animations: {
+
+            //turn off
+            self.submitBtn.removeGradientBackground()
+            self.submitBtn.backgroundColor = UIColor(red: 0.965, green: 0.965, blue: 0.965, alpha: 1)
+            self.submitBtn.setTitleColor(UIColor.gray, for: .normal)
+            
+        }, completion: nil)
+     
+    }
 }
 
 extension OpinionContentView: UITextViewDelegate {

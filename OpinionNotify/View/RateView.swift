@@ -12,6 +12,9 @@ class RateView: UIView {
     
     let defaultStar = UIImage(named: "star")
     let ratedStar = UIImage(named: "star")?.withTintColor(.yellow)
+    var selectedStar = -1
+    
+    var contentDelegate: OpinionContentView?
     
     let starView1: UIImageView = {
         
@@ -151,47 +154,122 @@ class RateView: UIView {
         starView5.isUserInteractionEnabled = true
     }
     
-    func ratingHandler(index: Int) {
-        
-        guard let starContainer = starContainer else {
-            return
-        }
-        
-        for i in 0...starContainer.count-1 {
-            
-            UIView.transition(with: self, duration: 0.2, options: .transitionCrossDissolve,
-                              animations: {
-                
-                if i<=index {
-                    
-                    //turn on star
-                    starContainer[i].image = self.ratedStar
-                    
-                } else {
-                    
-                    //turn off star
-                    starContainer[i].image = self.defaultStar
-                    
-                }
-                
-            }, completion: nil)
-
-        }
-  
+    func setupDelegate(view: OpinionContentView) {
+        self.contentDelegate = view
     }
     
-    @objc func starViewTap(_ sender: UITapGestureRecognizer, index: Int) {
-        
+//    func ratingHandler(recursionCount: Int = 0,index: Int) {
+//
+//        print(index)
+//        guard let starContainer = starContainer else {
+//            return
+//        }
+//
+//        if index>starContainer.count-1 {
+//            return
+//        }
+//
+//        if recursionCount>starContainer.count-1 {
+//            return
+//        }
+//
+//        UIView.transition(with: self, duration: 0.2, options: .transitionCrossDissolve,
+//                          animations: {
+//
+//            if recursionCount<=index {
+//
+//                //turn on star
+//                starContainer[recursionCount].image = self.ratedStar
+//
+//            } else {
+//
+//                //turn off star
+//                starContainer[recursionCount].image = self.defaultStar
+//
+//            }
+//
+//        }) {
+//            _ in
+//            self.ratingHandler(recursionCount: recursionCount+1, index: index)
+//        }
+//
+//
+//    }
+//
+
+    func ratingHandler(index: Int) {
+
         guard let starContainer = starContainer else {
             return
         }
 
-        if index > starContainer.count {
+        if index>starContainer.count-1 || index == selectedStar {
             return
         }
-        ratingHandler(index: index)
+        
+        //first touch
+        if selectedStar == -1 {
+            selectedStar = 0
+            UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve,
+                              animations: {
+
+                //turn on star
+                starContainer[0].image = self.ratedStar
+
+
+            }, completion: nil)
+        }
+
+        
+        if index >= selectedStar {
+
+            for i in selectedStar...index {
+
+                UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve,
+                                  animations: {
+
+                    //turn on star
+                    starContainer[i].image = self.ratedStar
+
+
+                }, completion: nil)
+
+            }
+
+        }
+
+        if index < selectedStar {
+
+            //reverse loop
+            for i in stride(from: selectedStar, to: index, by: -1) {
+
+                UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve,
+                                  animations: {
+
+                    //turn off star
+                    starContainer[i].image = self.defaultStar
+
+                }, completion: nil)
+
+            }
+
+        }
+
+        selectedStar = index
+        
+        if selectedStar >= starContainer.count/2 {
+            
+            contentDelegate?.turnOnSubmitButton()
+            
+        } else {
+            
+            contentDelegate?.turnOffSubmitButton()
+            
+        }
         
     }
+    
+  
     
     @objc func starView1Tap(_ sender: UITapGestureRecognizer) {
         

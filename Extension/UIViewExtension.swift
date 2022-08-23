@@ -18,9 +18,23 @@ extension UIView {
         
         gradient.frame = CGRect(x: 0, y: 0, width: self.frame.width, height: self.frame.height)
         gradient.colors = colors
-
+        gradient.name = "GradientSublayer"
         self.layer.insertSublayer(gradient, at: 0)
-        
     
+    }
+    
+    func removeGradientBackground() {
+        
+        guard let sublayers = self.layer.sublayers else {
+            return
+        }
+        for i in sublayers{
+            
+            if i.name == "GradientSublayer" {
+                i.removeFromSuperlayer()
+            }
+            
+        }
+        
     }
 }
