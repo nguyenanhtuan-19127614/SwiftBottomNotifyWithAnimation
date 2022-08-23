@@ -18,6 +18,9 @@ class OpinionContentView: UIView {
     let commentDefaultHeight: CGFloat = 130
     var commentCurrentHeight: CGFloat = 130
     
+    var starSelected: Bool = false
+    var numberStarSelected: Int = 0
+    
     //Dynamic comment height constraint
     var commentHeightConstraint: NSLayoutConstraint?
     
@@ -245,7 +248,10 @@ class OpinionContentView: UIView {
     }
     
     //Delegate Function
-    func turnOnSubmitButton() {
+    func turnOnSubmitButton(numberStars: Int) {
+        
+        self.starSelected = true
+        self.numberStarSelected = numberStars
         
         let startColor = CGColor(red: 0.439, green: 0.71, blue: 0.341, alpha: 1)
         let endColor = CGColor(red: 0.056, green: 0.558, blue: 0.317, alpha: 1)
@@ -261,7 +267,14 @@ class OpinionContentView: UIView {
 
     }
     
-    func turnOffSubmitButton() {
+    func turnOffSubmitButton(numberStars: Int) {
+        
+        self.starSelected = true
+        self.numberStarSelected = numberStars
+        
+        if !self.commentField.text.isEmpty {
+            return
+        }
         
         UIView.transition(with: self, duration: 0.3, options: .transitionCrossDissolve,
                           animations: {
@@ -272,6 +285,8 @@ class OpinionContentView: UIView {
             self.submitBtn.setTitleColor(UIColor.gray, for: .normal)
             
         }, completion: nil)
+        
+      
      
     }
 }
@@ -294,7 +309,6 @@ extension OpinionContentView: UITextViewDelegate {
                     //clear placholder
                     textView.text = ""
                    
-                    
                 }
             }
 
@@ -307,8 +321,19 @@ extension OpinionContentView: UITextViewDelegate {
         if textView.text.isEmpty {
             textView.text = commentPlaceHolder
             textView.textColor = .lightGray
+            
+            if starSelected == true && numberStarSelected < 3 {
+                print(numberStarSelected)
+                self.turnOffSubmitButton(numberStars: numberStarSelected)
+            }
+            
         } else if textView.text != commentPlaceHolder {
             textView.textColor = .black
+            
+            if starSelected == true && numberStarSelected >= 3 {
+                self.turnOnSubmitButton(numberStars: numberStarSelected)
+            }
+            
         }
         
     }
@@ -316,11 +341,14 @@ extension OpinionContentView: UITextViewDelegate {
     func textViewDidEndEditing(_ textView: UITextView) {
         
         if textView.text.isEmpty {
+            
             textView.text = commentPlaceHolder
             textView.textColor = .lightGray
-        } else if textView.text != commentPlaceHolder {
-            textView.textColor = .black
             
+        } else if textView.text != commentPlaceHolder {
+            
+            textView.textColor = .black
+          
         }
         
     }

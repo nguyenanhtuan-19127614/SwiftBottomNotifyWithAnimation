@@ -255,15 +255,16 @@ class RateView: UIView {
 
         }
 
+        //Delegate turn on/ off submit butotn
         selectedStar = index
         
         if selectedStar >= starContainer.count/2 {
             
-            contentDelegate?.turnOnSubmitButton()
+            contentDelegate?.turnOnSubmitButton(numberStars: selectedStar+1)
             
         } else {
             
-            contentDelegate?.turnOffSubmitButton()
+            contentDelegate?.turnOffSubmitButton(numberStars: selectedStar+1)
             
         }
         
