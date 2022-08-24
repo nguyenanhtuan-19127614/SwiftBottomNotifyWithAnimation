@@ -103,6 +103,29 @@ class NotifyVC: UIViewController {
         dimmedView.addGestureRecognizer(gesture)
         
         dismissibleHeight = self.view.bounds.height/2
+        
+        //Key board show noti
+        NotificationCenter.default.addObserver(self, selector: #selector(NotifyVC.keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
+        
+        //Key board hide noti
+        NotificationCenter.default.addObserver(self, selector: #selector(NotifyVC.keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+          
+    }
+    
+    // keyboard show animation
+    @objc func keyboardWillShow(notification: NSNotification) {
+            
+        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue else {
+          
+           return
+        }
+    
+      self.view.frame.origin.y = 0 - (keyboardSize.height - 20)
+    }
+    
+    //keyboard hide animaition
+    @objc func keyboardWillHide(notification: NSNotification) {
+      self.view.frame.origin.y = 0
     }
     
     //ViewDidAppear State()
